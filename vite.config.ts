@@ -23,10 +23,12 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: "dist",
     assetsDir: "assets",
-    // Ensure proper MIME types for TypeScript files
     rollupOptions: {
       output: {
         manualChunks: undefined,
+        assetFileNames: "assets/[name].[ext]",
+        chunkFileNames: "assets/[name].[hash].js",
+        entryFileNames: "assets/[name].[hash].js"
       },
     },
   },
