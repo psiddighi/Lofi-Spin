@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/", // Remove the base path since it's causing issues
+  base: "/lofi-spin-vibes-menu-main/", // Set correct base path for GitHub Pages
   server: {
     host: "::",
     port: 8080,
@@ -23,21 +23,29 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: "dist",
     assetsDir: "assets",
-    sourcemap: true, // Enable source maps for better debugging
+    sourcemap: true,
+    manifest: true,
     rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html')
+      },
       output: {
         manualChunks: undefined,
         assetFileNames: (assetInfo) => {
+          if (!assetInfo?.name) return 'assets/[name].[hash][extname]';
           const info = assetInfo.name.split('.');
           const ext = info[info.length - 1];
           if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
             return `assets/images/[name].[hash].[ext]`;
           }
+          if (/tsx?|jsx?/i.test(ext)) {
+            return `assets/js/[name].[hash].js`;
+          }
           return `assets/[name].[hash].[ext]`;
         },
         chunkFileNames: 'assets/js/[name].[hash].js',
         entryFileNames: 'assets/js/[name].[hash].js'
-      },
-    },
+      }
+    }
   },
 }));
