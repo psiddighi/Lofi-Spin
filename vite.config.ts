@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/lofi-spin-vibes-menu-main/", // Set correct base path for GitHub Pages
+  base: "/", // Set correct base path for GitHub Pages
   server: {
     host: "::",
     port: 8080,
