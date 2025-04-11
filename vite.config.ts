@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/Lofi-Spin/", // Set correct base path for GitHub Pages
+  base: "/", // Set base path for local development
   server: {
     host: "::",
     port: 8080,
@@ -34,20 +34,9 @@ export default defineConfig(({ mode }) => ({
       },
       output: {
         manualChunks: undefined,
-        assetFileNames: (assetInfo) => {
-          if (!assetInfo?.name) return 'assets/[name].[hash][extname]';
-          const info = assetInfo.name.split('.');
-          const ext = info[info.length - 1];
-          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
-            return `assets/images/[name].[hash].[ext]`;
-          }
-          if (/tsx?|jsx?/i.test(ext)) {
-            return `assets/js/[name].[hash].js`;
-          }
-          return `assets/[name].[hash].[ext]`;
-        },
-        chunkFileNames: 'assets/js/[name].[hash].js',
-        entryFileNames: 'assets/js/[name].[hash].js'
+        assetFileNames: 'assets/[name].[hash][extname]',
+        chunkFileNames: 'assets/[name].[hash].js',
+        entryFileNames: 'assets/[name].[hash].js'
       }
     }
   },
