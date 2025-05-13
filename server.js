@@ -8,6 +8,10 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Get local IP address for network sharing
+const { getLocalIpAddress } = require('./utils');
+const LOCAL_IP = getLocalIpAddress();
+
 // Middleware
 app.use(cors({
   origin: '*', // Allow all origins
@@ -211,9 +215,37 @@ app.get('/api/favorites', auth, async (req, res) => {
   }
 });
 
+// Serve static files from the React app build directory
+const path = require('path');
+const frontendPath = path.join(__dirname, 'lofi-spin-vibes-menu-main/dist');
+
+// Check if the frontend build directory exists
+const fs = require('fs');
+if (fs.existsSync(frontendPath)) {
+  console.log(`Serving frontend from: ${frontendPath}`);
+  
+  // Serve static files from the dist directory
+  app.use(express.static(frontendPath));
+  
+  // Handle routes for the frontend app
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  });
+  
+  // Catch-all route for client-side routing
+  app.get(/^\/(?!api).*/, (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  });
+} else {
+  console.warn(`Frontend build directory not found at: ${frontendPath}`);
+  console.warn('Please build the frontend app first with: cd lofi-spin-vibes-menu-main && npm run build');
+}
+
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`API available at http://0.0.0.0:${PORT}/api`);
-  console.log('Server is now accessible from external devices');
+  console.log(`API available at http://${LOCAL_IP}:${PORT}/api`);
+  console.log(`\n✅ SHAREABLE LINK: http://${LOCAL_IP}:${PORT}\n`);
+  console.log('Server is now accessible from other devices on your network');
+  console.log('Share this link with devices connected to the same WiFi/network');
 });
